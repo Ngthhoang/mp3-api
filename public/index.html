@@ -188,6 +188,13 @@
       if (!q) return setOut('Vui lòng nhập từ khóa');
       try {
         const res = await call('/api/search', { q });
+        if (typeof res?.err === 'number' && res.err !== 0) {
+          return setOut({
+            error: res?.msg || 'Search failed',
+            err: res?.err,
+            url: res?.url || ''
+          });
+        }
         const songs = Array.isArray(res?.data?.songs) ? res.data.songs : [];
         const concise = songs.map(pickSongFields);
         // auto điền Song ID bài đầu vào playback nếu có

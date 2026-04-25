@@ -50,6 +50,29 @@ Các route tham khảo thêm (nếu cần bật lại trong UI):
 - Thể loại MV: `GET /api/category-mv?id=<genreId>`
 - Video: `GET /api/video?id=<videoId>`
 
+## Endpoint chot cho robot ESP32
+- Endpoint chinh (khuyen dung): `GET /stream_pcm?song=<ten_bai>&artist=<ten_ca_si>`
+- Endpoint tuong thich (alias): `GET /api/robot/music?song=<ten_bai>&artist=<ten_ca_si>`
+- Stream proxy noi bo cho firmware: `GET /api/song/proxy-stream?id=<songId>`
+
+JSON tra ve cho firmware luon co 5 key:
+```json
+{
+  "title": "Lac Troi",
+  "artist": "Son Tung M-TP",
+  "audio_url": "/api/song/proxy-stream?id=ZW78DIEO",
+  "lyric_url": "https://...lrc",
+  "duration": 233
+}
+```
+
+Neu khong tim thay se tra object rong voi cung 5 key.
+
+## Log debug cho robot
+Server in log prefix `[robot]` cho cac buoc:
+- `endpoint_hit`, `search_start`, `search_success`, `search_failed`, `search_empty`
+- `stream_start`, `stream_proxying`, `stream_error`
+
 ## Ví dụ nhanh
 - Lấy link stream (JSON gốc):
 ```bash

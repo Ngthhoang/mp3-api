@@ -67,18 +67,20 @@ class ZingMp3Api {
     );
   }
 
-  private getCookie(): Promise<any> {
-    return new Promise<any>((resolve, rejects) => {
-        axios.get(`${this.URL}`)
+  private getCookie(): Promise<string> {
+    return new Promise<string>((resolve, rejects) => {
+        axios.get(`${this.URL}`, { timeout: 10000 })
           .then((res) => {
-            // TODO: Skip Error Object is possibly 'undefined'
-            if(res.headers["set-cookie"]) {
-              res.headers["set-cookie"].map((element, index) => {
-                if(index == 1) {
-                  resolve(element) // return cookie
-                }
-              })
+            const cookies = res.headers["set-cookie"]
+            if (Array.isArray(cookies) && cookies.length > 0) {
+              // Upstream can require multiple cookies for signed endpoints.
+              const cookieHeader = cookies
+                .map((cookie) => String(cookie).split(";")[0])
+                .join("; ")
+              resolve(cookieHeader)
+              return
             }
+            rejects(new Error("Failed to get cookie from upstream"))
           })
           .catch((err) => {
             rejects(err) // return error value if any
@@ -119,7 +121,7 @@ class ZingMp3Api {
             })
         })
         .catch((err) => {
-          console.log(err)
+          rejects(err)
         })
     })
   }
